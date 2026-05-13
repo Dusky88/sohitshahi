@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get in touch with Sohit Shahi — book a free consultation or ask about training programs.">
+  <title>Contact | Sohit Shahi — Personal Trainer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">SOHIT<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="clients.html">Clients</a></li>
+    <li><a href="contact.html" class="nav-cta active">Book a Session</a></li>
+  </ul>
+  <div class="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="index.html#about">About</a>
+  <a href="index.html#programs">Programs</a>
+  <a href="clients.html">Clients</a>
+  <a href="contact.html">Book a Session</a>
+</div>
+
+<!-- ─── PAGE HERO ─── -->
+<div class="page-hero" data-title="CONTACT">
+  <div class="section-eyebrow">Let's Connect</div>
+  <div class="section-title">BOOK A <span>FREE CONSULTATION</span></div>
+  <p class="section-desc" style="margin-top:0.8rem;">
+    No pressure, no commitment. Just a conversation about your goals and how I can help you reach them.
+  </p>
+</div>
+
+<!-- ─── CONTACT SECTION ─── -->
+<section>
+  <div class="contact-grid">
+
+    <!-- Info Side -->
+    <div>
+      <div class="section-eyebrow">Reach Out</div>
+      <div class="section-title fade-up" style="font-size:2.5rem;">LET'S <span>TALK.</span></div>
+      <p style="color:var(--muted); margin:1rem 0 2.5rem; line-height:1.8; font-size:0.95rem;">
+        Fill in the form, send a WhatsApp, or email directly. I respond to all inquiries within 24 hours.
+      </p>
+
+      <div class="contact-info-item fade-up">
+        <div class="contact-icon">📍</div>
+        <div class="contact-info-text">
+          <h4>Location</h4>
+          <p>Kathmandu, Nepal<br>Available for in-person & online sessions</p>
+        </div>
+      </div>
+
+      <div class="contact-info-item fade-up" data-delay="100">
+        <div class="contact-icon">📧</div>
+        <div class="contact-info-text">
+          <h4>Email</h4>
+          <p><a href="mailto:coach@sohitshahi.com.np">coach@sohitshahi.com.np</a></p>
+        </div>
+      </div>
+
+      <div class="contact-info-item fade-up" data-delay="150">
+        <div class="contact-icon">📱</div>
+        <div class="contact-info-text">
+          <h4>Phone / WhatsApp</h4>
+          <p><a href="tel:+977XXXXXXXXXX">+977 XXX-XXX-XXXX</a><br>Available 8am – 8pm NST</p>
+        </div>
+      </div>
+
+      <div class="contact-info-item fade-up" data-delay="200">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-info-text">
+          <h4>Session Hours</h4>
+          <p>Mon – Sat: 6am – 9pm<br>Sunday: 8am – 2pm</p>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem; padding:1.5rem; background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent);" class="fade-up" data-delay="250">
+        <p style="color:var(--accent); font-family:'Barlow Condensed',sans-serif; letter-spacing:0.15em; text-transform:uppercase; font-size:0.78rem; margin-bottom:0.5rem;">Free Consultation Includes</p>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
+          <li style="color:var(--muted); font-size:0.9rem; display:flex; gap:0.6rem; align-items:center;"><span style="color:var(--accent);">✓</span> 30-min goals assessment</li>
+          <li style="color:var(--muted); font-size:0.9rem; display:flex; gap:0.6rem; align-items:center;"><span style="color:var(--accent);">✓</span> Basic fitness level evaluation</li>
+          <li style="color:var(--muted); font-size:0.9rem; display:flex; gap:0.6rem; align-items:center;"><span style="color:var(--accent);">✓</span> Program recommendation</li>
+          <li style="color:var(--muted); font-size:0.9rem; display:flex; gap:0.6rem; align-items:center;"><span style="color:var(--accent);">✓</span> No obligation to sign up</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Form Side -->
+    <div class="fade-up" data-delay="100">
+      <form class="contact-form" id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name *</label>
+            <input type="text" id="fname" placeholder="Rajan" required>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Karki">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" placeholder="rajan@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone / WhatsApp</label>
+          <input type="tel" id="phone" placeholder="+977 XXX-XXX-XXXX">
+        </div>
+        <div class="form-group">
+          <label for="program">Program Interest</label>
+          <select id="program">
+            <option value="" disabled selected>Select a program...</option>
+            <option>Strength & Muscle Building</option>
+            <option>Fat Loss & Shred</option>
+            <option>Functional Fitness</option>
+            <option>Nutrition Coaching</option>
+            <option>Online Coaching</option>
+            <option>1-on-1 Personal Training</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="goal">Your Primary Goal</label>
+          <select id="goal">
+            <option value="" disabled selected>What do you want to achieve?</option>
+            <option>Lose weight / body fat</option>
+            <option>Build muscle & strength</option>
+            <option>Improve overall fitness</option>
+            <option>Athletic performance</option>
+            <option>Injury rehabilitation</option>
+            <option>General health & wellness</option>
+            <option>Competition prep</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Tell Me More (optional)</label>
+          <textarea id="message" placeholder="Any details about your current fitness level, past experience, schedule, or questions..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; font-size:1rem; padding:1rem;">
+          Send Message →
+        </button>
+      </form>
+      <div class="form-success">
+        ✓ Message sent! I'll be in touch within 24 hours.
+      </div>
+      <p style="color:var(--muted); font-size:0.78rem; margin-top:1rem; line-height:1.7;">
+        * This form uses a static submission. For full form functionality, connect it to <a href="https://formspree.io" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">Formspree</a> or a similar service (free tier available).
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">SOHIT<span>.</span></a>
+      <p>Personal Trainer & Fitness Coach based in Nepal. Helping you become the strongest version of yourself.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Navigation</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#programs">Programs</a></li>
+        <li><a href="clients.html">Client Stories</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <div class="footer-heading">Get In Touch</div>
+      <p>📍 Kathmandu, Nepal</p>
+      <p>📧 <a href="mailto:coach@sohitshahi.com.np">coach@sohitshahi.com.np</a></p>
+      <p>📱 <a href="tel:+977XXXXXXXXXX">+977 XXX-XXX-XXXX</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Sohit Shahi. All rights reserved.</p>
+    <div class="social-links">
+      <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

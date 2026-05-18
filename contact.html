@@ -99,28 +99,29 @@
 
     <!-- Form Side -->
     <div class="fade-up" data-delay="100">
-      <form class="contact-form" id="contactForm">
+      <!-- Replace YOUR_FORM_ID below with your actual Formspree form ID -->
+      <form class="contact-form" action="https://formspree.io/f/xwvzkdvr" method="POST">
         <div class="form-row">
           <div class="form-group">
             <label for="fname">First Name *</label>
-            <input type="text" id="fname" placeholder="Rajan" required>
+            <input type="text" id="fname" name="first_name" placeholder="Rajan" required>
           </div>
           <div class="form-group">
             <label for="lname">Last Name</label>
-            <input type="text" id="lname" placeholder="Karki">
+            <input type="text" id="lname" name="last_name" placeholder="Karki">
           </div>
         </div>
         <div class="form-group">
           <label for="email">Email Address *</label>
-          <input type="email" id="email" placeholder="rajan@example.com" required>
+          <input type="email" id="email" name="email" placeholder="rajan@example.com" required>
         </div>
         <div class="form-group">
           <label for="phone">Phone / WhatsApp</label>
-          <input type="tel" id="phone" placeholder="+977 XXX-XXX-XXXX">
+          <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX">
         </div>
         <div class="form-group">
           <label for="program">Program Interest</label>
-          <select id="program">
+          <select id="program" name="program_interest">
             <option value="" disabled selected>Select a program...</option>
             <option>Strength & Muscle Building</option>
             <option>Fat Loss & Shred</option>
@@ -133,7 +134,7 @@
         </div>
         <div class="form-group">
           <label for="goal">Your Primary Goal</label>
-          <select id="goal">
+          <select id="goal" name="primary_goal">
             <option value="" disabled selected>What do you want to achieve?</option>
             <option>Lose weight / body fat</option>
             <option>Build muscle & strength</option>
@@ -146,17 +147,16 @@
         </div>
         <div class="form-group">
           <label for="message">Tell Me More (optional)</label>
-          <textarea id="message" placeholder="Any details about your current fitness level, past experience, schedule, or questions..."></textarea>
+          <textarea id="message" name="message" placeholder="Any details about your current fitness level, past experience, schedule, or questions..."></textarea>
         </div>
+        <!-- Formspree honeypot spam filter -->
+        <input type="text" name="_gotcha" style="display:none">
         <button type="submit" class="btn btn-primary" style="width:100%; font-size:1rem; padding:1rem;">
           Send Message →
         </button>
       </form>
-      <div class="form-success">
-        ✓ Message sent! I'll be in touch within 24 hours.
-      </div>
       <p style="color:var(--muted); font-size:0.78rem; margin-top:1rem; line-height:1.7;">
-        * This form uses a static submission. For full form functionality, connect it to <a href="https://formspree.io" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">Formspree</a> or a similar service (free tier available).
+        Responses are sent directly to Sohit's inbox. You'll hear back within 24 hours.
       </p>
     </div>
 

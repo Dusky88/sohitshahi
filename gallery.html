@@ -1,746 +1,463 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Barlow+Condensed:wght@400;700&display=swap');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gallery — Sohit Shahi Personal Trainer. Gym, training sessions, and client transformation photos.">
+  <title>Gallery | Sohit Shahi — Personal Trainer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* ─── FILTER TABS ─── */
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .filter-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.5rem 1.2rem;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); color: var(--black); border-color: var(--accent); }
 
-:root {
-  --black: #0a0a0a;
-  --dark: #111111;
-  --card: #161616;
-  --border: #222222;
-  --accent: #c8f542;
-  --accent2: #e8ff6b;
-  --text: #f0f0f0;
-  --muted: #888;
-  --white: #ffffff;
-}
+    /* ─── GALLERY GRID ─── */
+    .gallery-grid {
+      columns: 3;
+      column-gap: 12px;
+      margin-top: 2.5rem;
+    }
+    @media (max-width: 900px) { .gallery-grid { columns: 2; } }
+    @media (max-width: 540px) { .gallery-grid { columns: 1; } }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: block;
+    }
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease;
+      filter: grayscale(15%);
+    }
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: grayscale(0%);
+    }
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-caption {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .gallery-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--black);
+      font-size: 0.65rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
 
-html { scroll-behavior: smooth; }
+    /* placeholder card when no image */
+    .gallery-placeholder {
+      width: 100%;
+      background: var(--card);
+      border: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3rem 1rem;
+    }
+    .gallery-placeholder span { font-size: 1.8rem; opacity: 0.4; }
 
-body {
-  font-family: 'Barlow', sans-serif;
-  background: var(--black);
-  color: var(--text);
-  overflow-x: hidden;
-  font-weight: 300;
-}
+    /* hidden filter state */
+    .gallery-item.hidden { display: none; }
 
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--dark); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: var(--accent); }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 1rem;
+      user-select: none;
+    }
+    .lightbox-nav:hover { color: var(--accent); }
+    .lightbox-prev { left: 1rem; }
+    .lightbox-next { right: 1rem; }
+  </style>
+</head>
+<body>
 
-/* ─── NAV ─── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 0 5%;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: background 0.4s, backdrop-filter 0.4s;
-}
-nav.scrolled {
-  background: rgba(10,10,10,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 0.08em;
-  color: var(--white);
-  text-decoration: none;
-}
-.nav-logo span { color: var(--accent); }
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-  align-items: center;
-}
-.nav-links a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-.nav-links a:hover, .nav-links a.active { color: var(--accent); }
-.nav-cta {
-  background: var(--accent);
-  color: var(--black) !important;
-  padding: 0.5rem 1.2rem;
-  border-radius: 2px;
-  font-weight: 700 !important;
-}
-.nav-cta:hover { background: var(--accent2) !important; }
-.burger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  padding: 4px;
-}
-.burger span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: var(--text);
-  transition: 0.3s;
-}
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 70px; left: 0; right: 0;
-  background: rgba(10,10,10,0.97);
-  backdrop-filter: blur(20px);
-  padding: 2rem 5%;
-  flex-direction: column;
-  gap: 1.5rem;
-  z-index: 99;
-  border-bottom: 1px solid var(--border);
-}
-.mobile-menu.open { display: flex; }
-.mobile-menu a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-.mobile-menu a:hover { color: var(--accent); }
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">SOHIT<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="clients.html">Clients</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="contact.html" class="nav-cta">Book a Session</a></li>
+  </ul>
+  <div class="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="index.html#about">About</a>
+  <a href="index.html#programs">Programs</a>
+  <a href="clients.html">Clients</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="contact.html">Book a Session</a>
+</div>
 
-/* ─── HERO ─── */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background-image: url('assets/trainer.jpg');
-  background-size: cover;
-  background-position: center top;
-  opacity: 0.2;
-  filter: grayscale(40%) contrast(1.1);
-  transform: scale(1.04);
-  transition: transform 8s ease;
-}
-.hero-bg.loaded { transform: scale(1); }
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    rgba(10,10,10,0.96) 0%,
-    rgba(10,10,10,0.75) 45%,
-    rgba(10,10,10,0.15) 100%
-  );
-}
-.hero-overlay-bottom {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 220px;
-  background: linear-gradient(to top, var(--black) 0%, transparent 100%);
-}
-.hero-content {
-  position: relative;
-  z-index: 2;
-  padding: 0 5%;
-  max-width: 780px;
-  animation: fadeUp 1s ease both;
-}
-.hero-eyebrow {
-  font-family: 'Barlow Condensed', sans-serif;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  color: var(--accent);
-  margin-bottom: 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.hero-eyebrow::before {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: var(--accent);
-}
-.hero h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(4rem, 10vw, 9rem);
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-  color: var(--white);
-  margin-bottom: 0.4rem;
-}
-.hero h1 span { color: var(--accent); }
-.hero-sub {
-  font-size: 1.1rem;
-  color: var(--muted);
-  max-width: 480px;
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
-  margin-top: 1rem;
-}
-.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+<!-- ─── PAGE HERO ─── -->
+<div class="page-hero" data-title="GALLERY">
+  <div class="section-eyebrow">Photos</div>
+  <div class="section-title">THE <span>GALLERY</span></div>
+  <p class="section-desc" style="margin-top:0.8rem;">
+    A look inside the training sessions, transformations, and the gym environment at Sohit's coaching space.
+  </p>
+</div>
 
-/* ─── BUTTONS ─── */
-.btn {
-  display: inline-block;
-  padding: 0.85rem 2rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  border-radius: 2px;
-  transition: all 0.2s;
-}
-.btn-primary { background: var(--accent); color: var(--black); }
-.btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
-.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+<!-- ─── GALLERY ─── -->
+<section>
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="gym">Gym</button>
+    <button class="filter-btn" data-filter="training">Training</button>
+    <button class="filter-btn" data-filter="clients">Clients</button>
+    <button class="filter-btn" data-filter="transformation">Transformations</button>
+  </div>
 
-/* ─── STATS STRIP ─── */
-.stats-strip {
-  background: var(--accent);
-  padding: 1.2rem 5%;
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  flex-wrap: wrap;
-}
-.stat-item { text-align: center; }
-.stat-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.2rem;
-  color: var(--black);
-  line-height: 1;
-}
-.stat-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,0.65);
-}
+  <!-- Gallery Grid -->
+  <!-- 
+    HOW TO ADD PHOTOS:
+    1. Put your images in the assets/ folder
+    2. Copy a gallery-item block below and change:
+       - src="assets/YOUR-IMAGE.jpg"
+       - data-category to one of: gym | training | clients | transformation
+       - data-caption to a short description
+    3. Push to GitHub — done!
+  -->
+  <div class="gallery-grid" id="galleryGrid">
 
-/* ─── SECTIONS ─── */
-section { padding: 6rem 5%; }
-.section-eyebrow {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.section-eyebrow::before {
-  content: '';
-  display: block;
-  width: 24px;
-  height: 1px;
-  background: var(--accent);
-}
-.section-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.4rem, 5vw, 4rem);
-  letter-spacing: 0.03em;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 1rem;
-}
-.section-title span { color: var(--accent); }
-.section-desc {
-  color: var(--muted);
-  max-width: 520px;
-  line-height: 1.8;
-  font-size: 1rem;
-}
+    <!-- GYM PHOTOS -->
+    <div class="gallery-item" data-category="gym" data-caption="The Training Space">
+      <img src="assets/gym1.jpg" alt="Gym" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🏋️</span>Add gym1.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Gym</span>
+          <div class="gallery-caption">The Training Space</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── ABOUT ─── */
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6rem;
-  align-items: center;
-  margin-top: 3rem;
-}
-.about-image-wrap {
-  position: relative;
-}
-.about-image-wrap img {
-  width: 100%;
-  aspect-ratio: 3/4;
-  object-fit: cover;
-  object-position: top;
-  filter: grayscale(20%);
-  display: block;
-}
-.about-img-placeholder {
-  width: 100%;
-  aspect-ratio: 3/4;
-  background: var(--card);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.5rem;
-  color: var(--muted);
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.about-img-placeholder svg { opacity: 0.3; }
-.about-accent-border {
-  position: absolute;
-  bottom: -16px; right: -16px;
-  width: 70%;
-  height: 70%;
-  border: 2px solid var(--accent);
-  z-index: -1;
-}
-.about-tag {
-  display: inline-block;
-  background: var(--accent);
-  color: var(--black);
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  padding: 0.3rem 0.7rem;
-  margin-bottom: 1.5rem;
-}
-.about-text p {
-  color: var(--muted);
-  line-height: 1.9;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-.cert-list {
-  list-style: none;
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.cert-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 0.9rem;
-  color: var(--text);
-  font-weight: 300;
-}
-.cert-list li::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--accent);
-  flex-shrink: 0;
-  transform: rotate(45deg);
-}
+    <div class="gallery-item" data-category="gym" data-caption="Equipment">
+      <img src="assets/gym2.jpg" alt="Gym Equipment" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🏋️</span>Add gym2.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Gym</span>
+          <div class="gallery-caption">Equipment</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── PROGRAMS / SERVICES ─── */
-.programs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5px;
-  margin-top: 3rem;
-  border: 1.5px solid var(--border);
-}
-.program-card {
-  background: var(--card);
-  padding: 2.5rem 2rem;
-  border: 1.5px solid var(--border);
-  position: relative;
-  overflow: hidden;
-  transition: background 0.3s;
-  cursor: default;
-}
-.program-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%; height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-}
-.program-card:hover { background: #1a1a1a; }
-.program-card:hover::after { transform: scaleX(1); }
-.program-icon {
-  font-size: 2rem;
-  margin-bottom: 1.2rem;
-  display: block;
-}
-.program-card h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.05em;
-  color: var(--white);
-  margin-bottom: 0.8rem;
-}
-.program-card p {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.8;
-}
-.program-num {
-  position: absolute;
-  top: 1.5rem; right: 2rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.5rem;
-  color: var(--border);
-  line-height: 1;
-}
+    <div class="gallery-item" data-category="gym" data-caption="The Floor">
+      <img src="assets/gym3.jpg" alt="Gym Floor" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🏋️</span>Add gym3.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Gym</span>
+          <div class="gallery-caption">The Floor</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── TESTIMONIALS (home preview) ─── */
-.testimonials-preview { background: var(--dark); }
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 3rem;
-}
-.testi-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 2rem;
-  position: relative;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.testi-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-.testi-quote {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem;
-  color: var(--accent);
-  opacity: 0.3;
-  line-height: 0.7;
-  margin-bottom: 1rem;
-}
-.testi-text {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.9;
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-.testi-author {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.testi-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem;
-  color: var(--black);
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.testi-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-.testi-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text);
-  letter-spacing: 0.05em;
-}
-.testi-role {
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-.stars { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.5rem; }
+    <!-- TRAINING PHOTOS -->
+    <div class="gallery-item" data-category="training" data-caption="Coaching in Action">
+      <img src="assets/training1.jpg" alt="Training" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>💪</span>Add training1.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Training</span>
+          <div class="gallery-caption">Coaching in Action</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── CTA BANNER ─── */
-.cta-banner {
-  background: var(--accent);
-  padding: 5rem 5%;
-  text-align: center;
-}
-.cta-banner h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  color: var(--black);
-  letter-spacing: 0.02em;
-  margin-bottom: 1rem;
-}
-.cta-banner p {
-  color: rgba(0,0,0,0.65);
-  font-size: 1.1rem;
-  max-width: 480px;
-  margin: 0 auto 2rem;
-  line-height: 1.7;
-}
-.btn-dark { background: var(--black); color: var(--white); }
-.btn-dark:hover { background: #1a1a1a; transform: translateY(-2px); }
+    <div class="gallery-item" data-category="training" data-caption="Strength Session">
+      <img src="assets/training2.jpg" alt="Training Session" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>💪</span>Add training2.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Training</span>
+          <div class="gallery-caption">Strength Session</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── FOOTER ─── */
-footer {
-  background: var(--dark);
-  border-top: 1px solid var(--border);
-  padding: 3rem 5% 2rem;
-}
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 3rem;
-  margin-bottom: 3rem;
-}
-.footer-brand p {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.8;
-  margin-top: 1rem;
-  max-width: 280px;
-}
-.footer-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.08em;
-  color: var(--white);
-  text-decoration: none;
-}
-.footer-logo span { color: var(--accent); }
-.footer-heading {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 1.2rem;
-}
-.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-.footer-links a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--accent); }
-.footer-contact p {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 2;
-}
-.footer-contact a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-.footer-contact a:hover { color: var(--accent); }
-.footer-bottom {
-  border-top: 1px solid var(--border);
-  padding-top: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.footer-bottom p { color: var(--muted); font-size: 0.8rem; }
-.social-links { display: flex; gap: 1rem; }
-.social-links a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.social-links a:hover { color: var(--accent); }
+    <div class="gallery-item" data-category="training" data-caption="Form & Technique">
+      <img src="assets/training3.jpg" alt="Form Check" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>💪</span>Add training3.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Training</span>
+          <div class="gallery-caption">Form & Technique</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── PAGE HERO (inner pages) ─── */
-.page-hero {
-  padding: 140px 5% 5rem;
-  background: var(--dark);
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-.page-hero::after {
-  content: attr(data-title);
-  position: absolute;
-  right: 3%;
-  bottom: -1rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(6rem, 18vw, 14rem);
-  color: var(--border);
-  opacity: 0.35;
-  letter-spacing: 0.02em;
-  pointer-events: none;
-  line-height: 1;
-}
+    <div class="gallery-item" data-category="training" data-caption="Conditioning Work">
+      <img src="assets/training4.jpg" alt="Conditioning" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>💪</span>Add training4.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Training</span>
+          <div class="gallery-caption">Conditioning Work</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── CLIENTS PAGE ─── */
-.clients-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-top: 3rem;
-}
-.client-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 2.5rem 2rem;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.client-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-.client-card .stars { font-size: 1rem; margin-bottom: 1rem; }
-.client-card .testi-text { margin-bottom: 2rem; }
-.client-goal {
-  display: inline-block;
-  background: rgba(200,245,66,0.1);
-  color: var(--accent);
-  border: 1px solid rgba(200,245,66,0.2);
-  font-size: 0.72rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.6rem;
-  border-radius: 1px;
-  margin-bottom: 1.5rem;
-  display: block;
-}
-.result-highlight {
-  background: var(--black);
-  border-left: 3px solid var(--accent);
-  padding: 0.8rem 1rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-.result-highlight strong { color: var(--accent); font-weight: 700; }
+    <!-- CLIENT PHOTOS -->
+    <div class="gallery-item" data-category="clients" data-caption="Client Session">
+      <img src="assets/client-session1.jpg" alt="Client" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🙌</span>Add client-session1.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Clients</span>
+          <div class="gallery-caption">Client Session</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── CONTACT PAGE ─── */
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 5rem;
-  margin-top: 3rem;
-  align-items: start;
-}
-.contact-info-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-.contact-icon {
-  width: 44px; height: 44px;
-  background: rgba(200,245,66,0.1);
-  border: 1px solid rgba(200,245,66,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 1.1rem;
-}
-.contact-info-text h4 {
-  font-family: 'Barlow Condensed', sans-serif;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: var(--accent);
-  margin-bottom: 0.3rem;
-}
-.contact-info-text p {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-.contact-info-text a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-.contact-info-text a:hover { color: var(--accent); }
-.contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-.form-group label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.form-group input,
-.form-group textarea,
-.form-group select {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 0.85rem 1rem;
-  font-family: 'Barlow', sans-serif;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s;
-  border-radius: 2px;
-  width: 100%;
-}
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus { border-color: var(--accent); }
-.form-group textarea { resize: vertical; min-height: 130px; }
-.form-group select option { background: var(--card); }
-.form-success {
-  display: none;
-  background: rgba(200,245,66,0.1);
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.95rem;
-}
+    <div class="gallery-item" data-category="clients" data-caption="Group Training">
+      <img src="assets/client-session2.jpg" alt="Group" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🙌</span>Add client-session2.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Clients</span>
+          <div class="gallery-caption">Group Training</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.fade-up {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.fade-up.visible { opacity: 1; transform: translateY(0); }
+    <!-- TRANSFORMATION PHOTOS -->
+    <div class="gallery-item" data-category="transformation" data-caption="12-Week Transformation">
+      <img src="assets/transform1.jpg" alt="Transformation" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🔥</span>Add transform1.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Transformation</span>
+          <div class="gallery-caption">12-Week Result</div>
+        </div>
+      </div>
+    </div>
 
-/* ─── RESPONSIVE ─── */
-@media (max-width: 900px) {
-  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .about-accent-border { display: none; }
-  .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-  .form-row { grid-template-columns: 1fr; }
-}
-@media (max-width: 640px) {
-  .nav-links { display: none; }
-  .burger { display: flex; }
-  .hero h1 { font-size: 4.5rem; }
-  .stats-strip { gap: 2rem; }
-  .footer-grid { grid-template-columns: 1fr; }
-  .programs-grid { grid-template-columns: 1fr; }
-}
+    <div class="gallery-item" data-category="transformation" data-caption="6-Month Progress">
+      <img src="assets/transform2.jpg" alt="Transformation" onerror="this.parentNode.innerHTML='<div class=\'gallery-placeholder\'><span>🔥</span>Add transform2.jpg to assets/</div>'">
+      <div class="gallery-overlay">
+        <div>
+          <span class="gallery-tag">Transformation</span>
+          <div class="gallery-caption">6-Month Progress</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<div class="cta-banner">
+  <h2>WANT RESULTS LIKE THESE?</h2>
+  <p>Book a free consultation and let's build your transformation story.</p>
+  <a href="contact.html" class="btn btn-dark">Get Started Today</a>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">SOHIT<span>.</span></a>
+      <p>Personal Trainer & Fitness Coach based in Nepal. Helping you become the strongest version of yourself.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Navigation</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#programs">Programs</a></li>
+        <li><a href="clients.html">Client Stories</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <div class="footer-heading">Get In Touch</div>
+      <p>📍 Kathmandu, Nepal</p>
+      <p>📧 <a href="mailto:coach@sohitshahi.com.np">coach@sohitshahi.com.np</a></p>
+      <p>📱 <a href="tel:+977XXXXXXXXXX">+977 XXX-XXX-XXXX</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Sohit Shahi. All rights reserved.</p>
+    <div class="social-links">
+      <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose">✕ CLOSE</div>
+  <div class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8592;</div>
+  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-nav lightbox-next" id="lightboxNext">&#8594;</div>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // ─── FILTER ───
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      galleryItems.forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // ─── LIGHTBOX ───
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  let currentIndex = 0;
+  let visibleItems = [];
+
+  function openLightbox(index) {
+    visibleItems = [...document.querySelectorAll('.gallery-item:not(.hidden) img')];
+    if (!visibleItems.length) return;
+    currentIndex = index;
+    lightboxImg.src = visibleItems[currentIndex].src;
+    lightboxCaption.textContent = visibleItems[currentIndex].closest('.gallery-item').dataset.caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function navigate(dir) {
+    currentIndex = (currentIndex + dir + visibleItems.length) % visibleItems.length;
+    lightboxImg.src = visibleItems[currentIndex].src;
+    lightboxCaption.textContent = visibleItems[currentIndex].closest('.gallery-item').dataset.caption || '';
+  }
+
+  document.querySelectorAll('.gallery-item img').forEach((img, i) => {
+    img.addEventListener('click', () => openLightbox(i));
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev').addEventListener('click', () => navigate(-1));
+  document.getElementById('lightboxNext').addEventListener('click', () => navigate(1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
+  });
+</script>
+</body>
+</html>

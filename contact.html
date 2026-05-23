@@ -119,10 +119,17 @@
           <input type="email" id="email" name="email" placeholder="rajan@example.com">
           <span class="field-error" id="err-email">Please enter a valid email address.</span>
         </div>
-        <div class="form-group">
-          <label for="phone">Phone / WhatsApp *</label>
-          <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX">
-          <span class="field-error" id="err-phone">Please enter your phone number.</span>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone / WhatsApp *</label>
+            <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX">
+            <span class="field-error" id="err-phone">Please enter your phone number.</span>
+          </div>
+          <div class="form-group">
+            <label for="country">Country *</label>
+            <input type="text" id="country" name="country" placeholder="Nepal">
+            <span class="field-error" id="err-country">Please enter your country.</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="program">Program Interest *</label>
@@ -131,7 +138,6 @@
             <option>Strength & Muscle Building</option>
             <option>Fat Loss & Shred</option>
             <option>Functional Fitness</option>
-            <option>Nutrition Coaching</option>
             <option>Online Coaching</option>
             <option>1-on-1 Personal Training</option>
             <option>Not sure yet</option>
@@ -184,18 +190,35 @@
 </style>
 
 <script>
+const fields = [
+  { id: 'fname',   errId: 'err-fname',   check: v => v.trim() !== '' },
+  { id: 'lname',   errId: 'err-lname',   check: v => v.trim() !== '' },
+  { id: 'email',   errId: 'err-email',   check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+  { id: 'phone',   errId: 'err-phone',   check: v => v.trim() !== '' },
+  { id: 'country', errId: 'err-country', check: v => v.trim() !== '' },
+  { id: 'program', errId: 'err-program', check: v => v !== '' },
+  { id: 'goal',    errId: 'err-goal',    check: v => v !== '' },
+];
+
+// Clear errors live as user types
+fields.forEach(f => {
+  const el = document.getElementById(f.id);
+  el.addEventListener('input', function() {
+    if (f.check(this.value)) {
+      this.classList.remove('invalid');
+      document.getElementById(f.errId).classList.remove('visible');
+    }
+  });
+  el.addEventListener('change', function() {
+    if (f.check(this.value)) {
+      this.classList.remove('invalid');
+      document.getElementById(f.errId).classList.remove('visible');
+    }
+  });
+});
+
 document.getElementById('contactForm').addEventListener('submit', function(e) {
   let valid = true;
-
-  const fields = [
-    { id: 'fname',   errId: 'err-fname',   check: v => v.trim() !== '' },
-    { id: 'lname',   errId: 'err-lname',   check: v => v.trim() !== '' },
-    { id: 'email',   errId: 'err-email',   check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
-    { id: 'phone',   errId: 'err-phone',   check: v => v.trim() !== '' },
-    { id: 'program', errId: 'err-program', check: v => v !== '' },
-    { id: 'goal',    errId: 'err-goal',    check: v => v !== '' },
-  ];
-
   fields.forEach(f => {
     const el = document.getElementById(f.id);
     const err = document.getElementById(f.errId);
@@ -208,15 +231,6 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       err.classList.remove('visible');
     }
   });
-
-  // Clear error on input
-  fields.forEach(f => {
-    document.getElementById(f.id).addEventListener('input', function() {
-      this.classList.remove('invalid');
-      document.getElementById(f.errId).classList.remove('visible');
-    }, { once: true });
-  });
-
   if (!valid) e.preventDefault();
 });
 </script>

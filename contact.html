@@ -190,39 +190,23 @@
 </style>
 
 <script>
-const fields = [
-  { id: 'fname',   errId: 'err-fname',   check: v => v.trim() !== '' },
-  { id: 'lname',   errId: 'err-lname',   check: v => v.trim() !== '' },
-  { id: 'email',   errId: 'err-email',   check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
-  { id: 'phone',   errId: 'err-phone',   check: v => v.trim() !== '' },
-  { id: 'country', errId: 'err-country', check: v => v.trim() !== '' },
-  { id: 'program', errId: 'err-program', check: v => v !== '' },
-  { id: 'goal',    errId: 'err-goal',    check: v => v !== '' },
-];
-
-// Clear errors live as user types
-fields.forEach(f => {
-  const el = document.getElementById(f.id);
-  el.addEventListener('input', function() {
-    if (f.check(this.value)) {
-      this.classList.remove('invalid');
-      document.getElementById(f.errId).classList.remove('visible');
-    }
-  });
-  el.addEventListener('change', function() {
-    if (f.check(this.value)) {
-      this.classList.remove('invalid');
-      document.getElementById(f.errId).classList.remove('visible');
-    }
-  });
-});
-
 document.getElementById('contactForm').addEventListener('submit', function(e) {
-  let valid = true;
-  fields.forEach(f => {
-    const el = document.getElementById(f.id);
-    const err = document.getElementById(f.errId);
-    if (!f.check(el.value)) {
+  var valid = true;
+
+  var checks = [
+    ['fname',   'err-fname',   function(v){ return v.trim() !== ''; }],
+    ['lname',   'err-lname',   function(v){ return v.trim() !== ''; }],
+    ['email',   'err-email',   function(v){ return v.indexOf('@') > 0; }],
+    ['phone',   'err-phone',   function(v){ return v.trim() !== ''; }],
+    ['country', 'err-country', function(v){ return v.trim() !== ''; }],
+    ['program', 'err-program', function(v){ return v !== ''; }],
+    ['goal',    'err-goal',    function(v){ return v !== ''; }],
+  ];
+
+  for (var i = 0; i < checks.length; i++) {
+    var el  = document.getElementById(checks[i][0]);
+    var err = document.getElementById(checks[i][1]);
+    if (!checks[i][2](el.value)) {
       el.classList.add('invalid');
       err.classList.add('visible');
       valid = false;
@@ -230,8 +214,13 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       el.classList.remove('invalid');
       err.classList.remove('visible');
     }
-  });
-  if (!valid) e.preventDefault();
+  }
+
+  if (!valid) {
+    e.preventDefault();
+    return false;
+  }
+  // valid — let the form submit naturally to Formspree
 });
 </script>
 

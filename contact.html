@@ -19,6 +19,7 @@
     <li><a href="index.html#about">About</a></li>
     <li><a href="index.html#programs">Programs</a></li>
     <li><a href="clients.html">Clients</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
     <li><a href="contact.html" class="nav-cta active">Book a Session</a></li>
   </ul>
   <div class="burger" aria-label="Menu">
@@ -30,6 +31,7 @@
   <a href="index.html#about">About</a>
   <a href="index.html#programs">Programs</a>
   <a href="clients.html">Clients</a>
+  <a href="gallery.html">Gallery</a>
   <a href="contact.html">Book a Session</a>
 </div>
 
@@ -99,28 +101,31 @@
 
     <!-- Form Side -->
     <div class="fade-up" data-delay="100">
-      <!-- Replace YOUR_FORM_ID below with your actual Formspree form ID -->
-      <form class="contact-form" action="https://formspree.io/f/xwvzkdvr" method="POST">
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/xwvzkdvr" method="POST" novalidate>
         <div class="form-row">
           <div class="form-group">
             <label for="fname">First Name *</label>
-            <input type="text" id="fname" name="first_name" placeholder="Rajan" required>
+            <input type="text" id="fname" name="first_name" placeholder="Rajan">
+            <span class="field-error" id="err-fname">Please enter your first name.</span>
           </div>
           <div class="form-group">
-            <label for="lname">Last Name</label>
+            <label for="lname">Last Name *</label>
             <input type="text" id="lname" name="last_name" placeholder="Karki">
+            <span class="field-error" id="err-lname">Please enter your last name.</span>
           </div>
         </div>
         <div class="form-group">
           <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" placeholder="rajan@example.com" required>
+          <input type="email" id="email" name="email" placeholder="rajan@example.com">
+          <span class="field-error" id="err-email">Please enter a valid email address.</span>
         </div>
         <div class="form-group">
-          <label for="phone">Phone / WhatsApp</label>
+          <label for="phone">Phone / WhatsApp *</label>
           <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX">
+          <span class="field-error" id="err-phone">Please enter your phone number.</span>
         </div>
         <div class="form-group">
-          <label for="program">Program Interest</label>
+          <label for="program">Program Interest *</label>
           <select id="program" name="program_interest">
             <option value="" disabled selected>Select a program...</option>
             <option>Strength & Muscle Building</option>
@@ -131,9 +136,10 @@
             <option>1-on-1 Personal Training</option>
             <option>Not sure yet</option>
           </select>
+          <span class="field-error" id="err-program">Please select a program.</span>
         </div>
         <div class="form-group">
-          <label for="goal">Your Primary Goal</label>
+          <label for="goal">Your Primary Goal *</label>
           <select id="goal" name="primary_goal">
             <option value="" disabled selected>What do you want to achieve?</option>
             <option>Lose weight / body fat</option>
@@ -144,6 +150,7 @@
             <option>General health & wellness</option>
             <option>Competition prep</option>
           </select>
+          <span class="field-error" id="err-goal">Please select your primary goal.</span>
         </div>
         <div class="form-group">
           <label for="message">Tell Me More (optional)</label>
@@ -159,6 +166,60 @@
         Responses are sent directly to Sohit's inbox. You'll hear back within 24 hours.
       </p>
     </div>
+
+<style>
+.field-error {
+  display: none;
+  color: #ff4d4d;
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+  font-family: 'Barlow', sans-serif;
+}
+.field-error.visible { display: block; }
+.form-group input.invalid,
+.form-group select.invalid,
+.form-group textarea.invalid {
+  border-color: #ff4d4d !important;
+}
+</style>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  let valid = true;
+
+  const fields = [
+    { id: 'fname',   errId: 'err-fname',   check: v => v.trim() !== '' },
+    { id: 'lname',   errId: 'err-lname',   check: v => v.trim() !== '' },
+    { id: 'email',   errId: 'err-email',   check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id: 'phone',   errId: 'err-phone',   check: v => v.trim() !== '' },
+    { id: 'program', errId: 'err-program', check: v => v !== '' },
+    { id: 'goal',    errId: 'err-goal',    check: v => v !== '' },
+  ];
+
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const err = document.getElementById(f.errId);
+    if (!f.check(el.value)) {
+      el.classList.add('invalid');
+      err.classList.add('visible');
+      valid = false;
+    } else {
+      el.classList.remove('invalid');
+      err.classList.remove('visible');
+    }
+  });
+
+  // Clear error on input
+  fields.forEach(f => {
+    document.getElementById(f.id).addEventListener('input', function() {
+      this.classList.remove('invalid');
+      document.getElementById(f.errId).classList.remove('visible');
+    }, { once: true });
+  });
+
+  if (!valid) e.preventDefault();
+});
+</script>
 
   </div>
 </section>

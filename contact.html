@@ -101,39 +101,34 @@
 
     <!-- Form Side -->
     <div class="fade-up" data-delay="100">
-      <form class="contact-form" id="contactForm" action="https://formspree.io/f/xwvzkdvr" method="POST">
+      <form class="contact-form" action="https://formspree.io/f/xwvzkdvr" method="POST">
         <div class="form-row">
           <div class="form-group">
             <label for="fname">First Name *</label>
-            <input type="text" id="fname" name="first_name" placeholder="Rajan">
-            <span class="field-error" id="err-fname">Please enter your first name.</span>
+            <input type="text" id="fname" name="first_name" placeholder="Rajan" required>
           </div>
           <div class="form-group">
             <label for="lname">Last Name *</label>
-            <input type="text" id="lname" name="last_name" placeholder="Karki">
-            <span class="field-error" id="err-lname">Please enter your last name.</span>
+            <input type="text" id="lname" name="last_name" placeholder="Karki" required>
           </div>
         </div>
         <div class="form-group">
           <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" placeholder="rajan@example.com">
-          <span class="field-error" id="err-email">Please enter a valid email address.</span>
+          <input type="email" id="email" name="email" placeholder="rajan@example.com" required>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="phone">Phone / WhatsApp *</label>
-            <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX">
-            <span class="field-error" id="err-phone">Please enter your phone number.</span>
+            <input type="tel" id="phone" name="phone" placeholder="+977 XXX-XXX-XXXX" required>
           </div>
           <div class="form-group">
             <label for="country">Country *</label>
-            <input type="text" id="country" name="country" placeholder="Nepal">
-            <span class="field-error" id="err-country">Please enter your country.</span>
+            <input type="text" id="country" name="country" placeholder="Nepal" required>
           </div>
         </div>
         <div class="form-group">
           <label for="program">Program Interest *</label>
-          <select id="program" name="program_interest">
+          <select id="program" name="program_interest" required>
             <option value="" disabled selected>Select a program...</option>
             <option>Strength & Muscle Building</option>
             <option>Fat Loss & Shred</option>
@@ -142,11 +137,10 @@
             <option>1-on-1 Personal Training</option>
             <option>Not sure yet</option>
           </select>
-          <span class="field-error" id="err-program">Please select a program.</span>
         </div>
         <div class="form-group">
           <label for="goal">Your Primary Goal *</label>
-          <select id="goal" name="primary_goal">
+          <select id="goal" name="primary_goal" required>
             <option value="" disabled selected>What do you want to achieve?</option>
             <option>Lose weight / body fat</option>
             <option>Build muscle & strength</option>
@@ -156,13 +150,11 @@
             <option>General health & wellness</option>
             <option>Competition prep</option>
           </select>
-          <span class="field-error" id="err-goal">Please select your primary goal.</span>
         </div>
         <div class="form-group">
           <label for="message">Tell Me More (optional)</label>
           <textarea id="message" name="message" placeholder="Any details about your current fitness level, past experience, schedule, or questions..."></textarea>
         </div>
-        <!-- Formspree honeypot spam filter -->
         <input type="text" name="_gotcha" style="display:none">
         <button type="submit" class="btn btn-primary" style="width:100%; font-size:1rem; padding:1rem;">
           Send Message →
@@ -172,57 +164,6 @@
         Responses are sent directly to Sohit's inbox. You'll hear back within 24 hours.
       </p>
     </div>
-
-<style>
-.field-error {
-  display: none;
-  color: #ff4d4d;
-  font-size: 0.78rem;
-  margin-top: 0.3rem;
-  font-family: 'Barlow', sans-serif;
-}
-.field-error.visible { display: block; }
-.form-group input.invalid,
-.form-group select.invalid,
-.form-group textarea.invalid {
-  border-color: #ff4d4d !important;
-}
-</style>
-
-<script>
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-  var valid = true;
-
-  var checks = [
-    ['fname',   'err-fname',   function(v){ return v.trim() !== ''; }],
-    ['lname',   'err-lname',   function(v){ return v.trim() !== ''; }],
-    ['email',   'err-email',   function(v){ return v.indexOf('@') > 0; }],
-    ['phone',   'err-phone',   function(v){ return v.trim() !== ''; }],
-    ['country', 'err-country', function(v){ return v.trim() !== ''; }],
-    ['program', 'err-program', function(v){ return v !== ''; }],
-    ['goal',    'err-goal',    function(v){ return v !== ''; }],
-  ];
-
-  for (var i = 0; i < checks.length; i++) {
-    var el  = document.getElementById(checks[i][0]);
-    var err = document.getElementById(checks[i][1]);
-    if (!checks[i][2](el.value)) {
-      el.classList.add('invalid');
-      err.classList.add('visible');
-      valid = false;
-    } else {
-      el.classList.remove('invalid');
-      err.classList.remove('visible');
-    }
-  }
-
-  if (!valid) {
-    e.preventDefault();
-    return false;
-  }
-  // valid — let the form submit naturally to Formspree
-});
-</script>
 
   </div>
 </section>
